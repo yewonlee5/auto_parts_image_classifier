@@ -84,8 +84,14 @@ def classify_image(image):
 
 # Streamlit UI
 st.title("Auto Parts Image Classifier")
-st.write("Transfer Learning using MobileNetV2 for image classification with 40 Classes: ")
+st.write("Transfer Learning using MobileNetV2 for image classification with 40 Classes")
 st.write("Upload an image and the model will classify it.")
+
+# Show class names in the description
+st.write("### Available Classes:")
+for idx, class_name in class_names.items():
+    st.write(f"{idx}: {class_name}")
+
 
 uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
