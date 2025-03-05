@@ -86,21 +86,31 @@ def classify_image(image):
 st.title("Auto Parts Image Classifier")
 st.write("Transfer Learning using MobileNetV2 for image classification with 40 Classes.")
 
-# Show class names in the description
-class_name_string = ', '.join(list(class_names.values()))
-st.write(f"Available Classes: {class_name_string}")
+# Layout with two columns
+col1, col2 = st.columns([1, 2])
+
+# Content for col1
+with col1:
+    # Show class names in the description
+    class_name_string = ', '.join(list(class_names.values()))
+    st.write("### Available Classes:")
+    st.write(f"These are the 40 classes your image could belong to:\n")
+    st.text(class_name_string)
+
+    st.write("Upload an image and the model will classify it.")
+    uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
 
-st.write("Upload an image and the model will classify it.")
-uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
+# Content for the right column (col2)
+with col2:
+    if uploaded_image is not None:
+        image = Image.open(uploaded_image)
+        st.image(image, caption="Uploaded Image", use_container_width=True)  # Use new parameter
+        st.write("")  # Add some space
 
-if uploaded_image is not None:
-    image = Image.open(uploaded_image)
-    st.image(image, caption="Uploaded Image", use_container_width=True)  # Use new parameter
-    st.write("")  # Add some space
+        # Run classification
+        class_name, class_prob = classify_image(image)
 
-    # Run classification
-    class_name, class_prob = classify_image(image)
+        # Display result
+        st.write(f"Predicted class: {class_name} with {class_prob:.2f}% probability")
 
-    # Display result
-    st.write(f"Predicted class: {class_name} with {class_prob:.2f}% probability")
