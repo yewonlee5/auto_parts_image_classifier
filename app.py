@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 import tensorflow as tf
 
+# Class Name Dictionary
 class_names = {0: 'AIR COMPRESSOR',
   1: 'ALTERNATOR',
   2: 'BATTERY',
@@ -55,12 +56,12 @@ output_details = interpreter.get_output_details()
 
 # Define a function to preprocess the uploaded image
 def preprocess_image(image):
-    image = image.resize((224, 224))  # Assuming your model expects 224x224 input
+    image = image.resize((224, 224))
     image = np.array(image)
     image = np.expand_dims(image, axis=0)  # Add batch dimension
-    image = image / 255.0  # Normalize image (if needed)
+    image = image / 255.0  # Normalize image
 
-    # Ensure the image is in FLOAT32 type (important for TFLite)
+    # Ensure the image is in FLOAT32 type
     image = image.astype(np.float32)
     return image
 
@@ -79,13 +80,13 @@ def classify_image(image):
     # Get the class name from the dictionary
     class_name = class_names.get(class_idx, "Unknown Class")
 
-    return class_name, class_prob
+    return class_name, class_prob, image
 
 
 # Streamlit UI
-st.set_page_config(layout="wide")
 im = Image.open('car_icon.png')
-st.set_page_config(page_title="Auto Parts Image Classifier", page_icon = im)
+st.set_page_config(layout="wide", page_title="Auto Parts Image Classifier", page_icon = im)
+
 st.title("Auto Parts Image Classifier")
 st.write("Transfer Learning using MobileNetV2 for image classification with 40 Classes.")
 
@@ -104,16 +105,16 @@ with col1:
     uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
 
-# Content for the right column (col2)
+# Content for col2
 with col2:
     if uploaded_image is not None:
         image = Image.open(uploaded_image)
-        st.image(image, caption="Uploaded Image", use_container_width=True)  # Use new parameter
-        st.write("")  # Add some space
 
         # Run classification
-        class_name, class_prob = classify_image(image)
+        class_name, class_prob, resized_image = classify_image(image)
 
-        # Display result
+        # Display the resized image
+        st.image(resized_image, caption="Resized Image (224x224)", use_container_width=True)
+
+        # Display the classification result
         st.write(f"Predicted class: {class_name} with {class_prob:.2f}% probability")
-
