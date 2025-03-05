@@ -83,6 +83,9 @@ def classify_image(image):
 
 
 # Streamlit UI
+st.set_page_config(layout="wide")
+im = Image.open('car_icon.png')
+st.set_page_config(page_title="Auto Parts Image Classifier", page_icon = im)
 st.title("Auto Parts Image Classifier")
 st.write("Transfer Learning using MobileNetV2 for image classification with 40 Classes.")
 
