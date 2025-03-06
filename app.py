@@ -2,48 +2,19 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 import tensorflow as tf
+import pandas as pd
+import altair as alt
 
 # Class Name Dictionary
-class_names = {0: 'AIR COMPRESSOR',
-  1: 'ALTERNATOR',
-  2: 'BATTERY',
-  3: 'BRAKE CALIPER',
-  4: 'BRAKE PAD',
-  5: 'BRAKE ROTOR',
-  6: 'CAMSHAFT',
-  7: 'CARBERATOR',
-  8: 'COIL SPRING',
-  9: 'CRANKSHAFT',
-  10: 'CYLINDER HEAD',
-  11: 'DISTRIBUTOR',
-  12: 'ENGINE BLOCK',
-  13: 'FUEL INJECTOR',
-  14: 'FUSE BOX',
-  15: 'GAS CAP',
-  16: 'HEADLIGHTS',
-  17: 'IDLER ARM',
-  18: 'IGNITION COIL',
-  19: 'LEAF SPRING',
-  20: 'LOWER CONTROL ARM',
-  21: 'MUFFLER',
-  22: 'OIL FILTER',
-  23: 'OIL PAN',
-  24: 'OVERFLOW TANK',
-  25: 'OXYGEN SENSOR',
-  26: 'PISTON',
-  27: 'RADIATOR',
-  28: 'RADIATOR FAN',
-  29: 'RADIATOR HOSE',
-  30: 'RIM',
-  31: 'SPARK PLUG',
-  32: 'STARTER',
-  33: 'TAILLIGHTS',
-  34: 'THERMOSTAT',
-  35: 'TORQUE CONVERTER',
-  36: 'TRANSMISSION',
-  37: 'VACUUM BRAKE BOOSTER',
-  38: 'VALVE LIFTER',
-  39: 'WATER PUMP'}
+class_names = {0: 'AIR COMPRESSOR', 1: 'ALTERNATOR', 2: 'BATTERY', 3: 'BRAKE CALIPER',
+               4: 'BRAKE PAD', 5: 'BRAKE ROTOR', 6: 'CAMSHAFT', 7: 'CARBERATOR', 8: 'COIL SPRING',
+               9: 'CRANKSHAFT', 10: 'CYLINDER HEAD', 11: 'DISTRIBUTOR', 12: 'ENGINE BLOCK', 13: 'FUEL INJECTOR',
+               14: 'FUSE BOX', 15: 'GAS CAP', 16: 'HEADLIGHTS', 17: 'IDLER ARM', 18: 'IGNITION COIL',
+               19: 'LEAF SPRING', 20: 'LOWER CONTROL ARM', 21: 'MUFFLER', 22: 'OIL FILTER', 23: 'OIL PAN',
+               24: 'OVERFLOW TANK', 25: 'OXYGEN SENSOR', 26: 'PISTON', 27: 'RADIATOR', 28: 'RADIATOR FAN',
+               29: 'RADIATOR HOSE', 30: 'RIM', 31: 'SPARK PLUG', 32: 'STARTER', 33: 'TAILLIGHTS', 34: 'THERMOSTAT',
+               35: 'TORQUE CONVERTER', 36: 'TRANSMISSION', 37: 'VACUUM BRAKE BOOSTER', 38: 'VALVE LIFTER',
+               39: 'WATER PUMP'}
 
 # Load the TFLite model
 interpreter = tf.lite.Interpreter(model_path="compressed_model.tflite")
@@ -54,19 +25,17 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 
-# Define a function to preprocess the uploaded image
+# Function to preprocess the uploaded image
 def preprocess_image(image):
     image = image.resize((224, 224))
     image = np.array(image)
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     image = image / 255.0  # Normalize image
-
-    # Ensure the image is in FLOAT32 type
     image = image.astype(np.float32)
     return image
 
 
-# Define a function to classify the image
+# Function to classify the image
 def classify_image(image):
     input_data = preprocess_image(image)
     interpreter.set_tensor(input_details[0]['index'], input_data)
@@ -76,45 +45,103 @@ def classify_image(image):
     # Get the class with the highest probability
     class_idx = np.argmax(output_data)
     class_prob = output_data[0][class_idx] * 100  # Convert to percentage
-
-    # Get the class name from the dictionary
     class_name = class_names.get(class_idx, "Unknown Class")
-
-    return class_name, class_prob, image
+    return class_name, class_prob, output_data[0]
 
 
 # Streamlit UI
 im = Image.open('car_icon.png')
-st.set_page_config(layout="wide", page_title="Auto Parts Image Classifier", page_icon = im)
+st.set_page_config(layout="wide", page_title="Auto Parts Image Classifier", page_icon=im)
 
+# Sidebar
+with st.sidebar:
+    st.write("""
+        ## About the Model
+        This is an auto parts image classifier built using Transfer Learning with MobileNetV2. It can classify images into 40 distinct 
+        auto parts classes based on a trained model. Choose an image to classify and the model will predict the part.
+        """)
+    # Add an expander for available classes in the sidebar
+    with st.expander("40 Available Classes", expanded=False):
+        class_name_string = '\n'.join(list(class_names.values()))
+        st.text(class_name_string)
+
+    st.write("""
+        You can upload an image or use the camera to take a picture for classification.
+    """)
+
+    if st.button("Show EDA & Model Performance"):
+        st.session_state.show_eda = True
+
+    st.write("""
+        ### Contact:
+        """)
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.write("**Yewon Lee**")
+    with col2:
+        st.markdown("""
+            <a href="https://github.com/yewonlee5/yewonlee5.github.io" target="_blank">
+                <img src="https://img.icons8.com/ios-filled/50/000000/github.png" alt="GitHub" style="width: 30px; height: 30px;"/>
+            </a>
+            &nbsp;
+            <a href="mailto:ylee52@g.ucla.edu" target="_blank">
+                <img src="https://img.icons8.com/ios-filled/50/000000/mail.png" alt="Email" style="width: 30px; height: 30px;"/>
+            </a>
+        """, unsafe_allow_html=True)
+
+# Main page layout
 st.title("Auto Parts Image Classifier")
-st.write("Transfer Learning using MobileNetV2 for image classification with 40 Classes.")
 
-# Layout with two columns
-col1, col2 = st.columns([1, 2])
+# Image Upload Input
+uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
-# Content for col1
-with col1:
-    # Show class names in the description
-    class_name_string = ', '.join(list(class_names.values()))
-    st.write("### Available Classes:")
-    st.write(f"These are the 40 classes your image could belong to:\n")
-    st.text(class_name_string)
+# Button to show Camera input
+take_picture_button = st.button("Take Picture")
 
-    st.write("Upload an image and the model will classify it.")
-    uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
+# Show the camera input only when the "Take Picture" button is clicked
+if take_picture_button:
+    camera_input = st.camera_input("Capture Image")
+else:
+    camera_input = None
 
+# Show the spinner
+if uploaded_image is not None or camera_input is not None:
+    with st.spinner('Processing Image...'):
+        if uploaded_image:
+            image = Image.open(uploaded_image)
+        elif camera_input:
+            image = Image.open(camera_input)
 
-# Content for col2
-with col2:
-    if uploaded_image is not None:
-        image = Image.open(uploaded_image)
+        # Run the model classification
+        class_name, class_prob, output_data = classify_image(image)
 
-        # Run classification
-        class_name, class_prob, resized_image = classify_image(image)
+        # Create a bar chart for predicted classes
+        output_data = pd.DataFrame(output_data, columns=["Probability"])
+        output_data["Class"] = list(class_names.values())
+        output_data = output_data.sort_values(by="Probability", ascending=False)
 
-        # Display the resized image
-        st.image(resized_image, caption="Resized Image (224x224)", use_container_width=True)
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            # Resize image for better display
+            st.image(image.resize((224, 224)), caption="Uploaded Image", width=250)
+        with col2:
+            # Display the top 5 predictions
+            st.write(alt.Chart(output_data.head(5)).mark_bar().encode(
+              x = alt.X('Class', sort = None),
+              y = 'Probability',
+            ))
 
-        # Display the classification result
-        st.write(f"Predicted class: {class_name} with {class_prob:.2f}% probability")
+            # Display prediction result
+            st.write(f"Predicted class: **{class_name}** with **{class_prob:.2f}%** probability")
+
+        # Hide EDA & Performance after prediction
+        st.session_state.show_eda = False  # Hide EDA by default after prediction
+
+# Default view: EDA & Performance
+if 'show_eda' not in st.session_state:
+    st.session_state.show_eda = True
+
+if st.session_state.show_eda:
+    st.write("## EDA and model performance")
+    st.image("PCA.png", caption="Principal Component Analysis")
+    st.image("example.png", caption="Model Performance")

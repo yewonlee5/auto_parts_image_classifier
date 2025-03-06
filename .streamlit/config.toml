@@ -1,0 +1,12 @@
+# .streamlit/config.toml
+
+[theme]
+primaryColor = "#1f77b4"  # Blue color for interactive elements
+backgroundColor = "#f0f0f5"  # Light gray background
+secondaryBackgroundColor = "#ffffff"  # White for secondary elements
+textColor = "#333333"  # Dark gray text color for better contrast
+font = "sans serif"  # Modern sans-serif font for better readability
+
+[server]
+headless = true
+port = 8501
