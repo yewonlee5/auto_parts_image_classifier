@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 import tensorflow as tf
 import pandas as pd
-import altair as alt
+import matplotlib.pyplot as plt
 
 # Class Name Dictionary
 class_names = {0: 'AIR COMPRESSOR', 1: 'ALTERNATOR', 2: 'BATTERY', 3: 'BRAKE CALIPER',
@@ -123,13 +123,19 @@ if uploaded_image is not None or camera_input is not None:
         col1, col2 = st.columns([1, 1])
         with col1:
             # Resize image for better display
-            st.image(image.resize((224, 224)), caption="Uploaded Image", width=250)
+            st.image(image.resize((224, 224)), caption="Uploaded Image", width=300)
         with col2:
             # Display the top 5 predictions
-            st.write(alt.Chart(output_data.head(5)).mark_bar().encode(
-              x = alt.X('Class', sort = None),
-              y = 'Probability',
-            ))
+            plt.figure(figsize=(8, 6))
+            plt.bar(output_data['Class'].head(5), output_data['Probability'].head(5), color='skyblue')
+            plt.xlabel('Class')
+            plt.ylabel('Probability')
+            plt.title('Top 5 Predictions')
+
+            # Rotate X-axis labels
+            plt.xticks(rotation=90)  # Rotate labels by 45 degrees
+
+            st.pyplot(plt)  # Display the chart in Streamlit
 
             # Display prediction result
             st.write(f"Predicted class: **{class_name}** with **{class_prob:.2f}%** probability")
