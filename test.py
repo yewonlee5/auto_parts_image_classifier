@@ -71,10 +71,11 @@ with st.sidebar:
 
     if st.button("Show EDA & Model Performance"):
         st.session_state.show_eda = True
-
-        st.session_state["uploader_key"] += 1
-        st.session_state["picture_key"] += 1
-        st.rerun()
+        uploaded_image = None
+        camera_input = None
+        st.session_state.uploaded_image = None
+        st.session_state.class_name = None
+        st.session_state.class_prob = None
 
     st.write("""
         ### Contact:
@@ -96,19 +97,15 @@ with st.sidebar:
 # Main page layout
 st.title("Auto Parts Image Classifier")
 
-if "uploader_key" not in st.session_state:
-    st.session_state["uploader_key"] = 1
 # Image Upload Input
-uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"], key=st.session_state["uploader_key"])
+uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
-if "picture_key" not in st.session_state:
-    st.session_state["picture_key"] = 1000
 # Button to show Camera input
 take_picture_button = st.button("Take Picture")
 
 # Show the camera input only when the "Take Picture" button is clicked
 if take_picture_button:
-    camera_input = st.camera_input("Capture Image", key=st.session_state["picture_key"])
+    camera_input = st.camera_input("Capture Image")
 else:
     camera_input = None
 
@@ -147,6 +144,12 @@ if uploaded_image is not None or camera_input is not None:
 
             # Display prediction result
             st.write(f"Predicted class: **{class_name}** with **{class_prob:.2f}%** probability")
+
+        # Store the classification result for future use in session state
+        st.session_state.uploaded_image = image
+        st.session_state.class_name = class_name
+        st.session_state.class_prob = class_prob
+        st.session_state.output_data = output_data
 
         # Hide EDA & Performance after prediction
         st.session_state.show_eda = False  # Hide EDA by default after prediction
