@@ -57,8 +57,7 @@ st.set_page_config(layout="wide", page_title="Auto Parts Image Classifier", page
 with st.sidebar:
     st.write("""
         ## About the Model
-        This is an auto parts image classifier built using Transfer Learning with MobileNetV2. It can classify images into 40 distinct 
-        auto parts classes based on a trained model. Choose an image to classify and the model will predict the part.
+        This auto parts image classifier is built using Transfer Learning with MobileNetV2, capable of classifying images into 40 distinct auto parts classes. The model was trained on a dataset consisting of 6917 training images, 200 validation images, and 200 test images, with a balanced distribution across all 40 classes.
         """)
     # Add an expander for available classes in the sidebar
     with st.expander("40 Available Classes", expanded=False):
@@ -73,9 +72,9 @@ with st.sidebar:
         st.session_state.show_eda = True
 
         st.session_state["uploader_key"] += 1
-        st.session_state["picture_key"] += 1
         st.rerun()
 
+    image_path = 'assets/headshot_2025s_dropped.jpg'
     st.write("""
         ### Contact:
         """)
@@ -101,24 +100,11 @@ if "uploader_key" not in st.session_state:
 # Image Upload Input
 uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"], key=st.session_state["uploader_key"])
 
-if "picture_key" not in st.session_state:
-    st.session_state["picture_key"] = 1000
-# Button to show Camera input
-take_picture_button = st.button("Take Picture")
-
-# Show the camera input only when the "Take Picture" button is clicked
-if take_picture_button:
-    camera_input = st.camera_input("Capture Image", key=st.session_state["picture_key"])
-else:
-    camera_input = None
-
 # Show the spinner
-if uploaded_image is not None or camera_input is not None:
+if uploaded_image is not None:
     with st.spinner('Processing Image...'):
         if uploaded_image:
             image = Image.open(uploaded_image)
-        elif camera_input:
-            image = Image.open(camera_input)
 
         # Run the model classification
         class_name, class_prob, output_data = classify_image(image)
@@ -156,6 +142,17 @@ if 'show_eda' not in st.session_state:
     st.session_state.show_eda = True
 
 if st.session_state.show_eda:
-    st.write("## EDA and model performance")
+    st.header("🚗 EDA and model performance 🛠️")
+    st.write("""
+    Finding the right car part can feel like a challenge, especially if you're not an expert! 😅
+    The PCA analysis highlights just how challenging this task is, showing that many parts share similar features.
+    """)
     st.image("assets/1_PCA.png", caption="Principal Component Analysis")
-    st.image("assets/2_confusion_matrix.png", caption="Model Performance (Confusion Matrix)")
+
+    st.write("""
+    That’s where this app comes in! 🎉
+    Simply upload or take a picture of the part, and we'll tell you what it is! 📸🔍
+    The model performs well with a **93.5%** test accuracy, and you can explore the confusion matrix to see how it handles different parts. 🙌
+    """)
+
+    st.image("assets/2_confusion_matrix.png", caption="Confusion Matrix")
