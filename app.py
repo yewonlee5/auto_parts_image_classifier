@@ -57,7 +57,7 @@ st.set_page_config(layout="wide", page_title="Auto Parts Image Classifier", page
 with st.sidebar:
     st.write("""
         ## About the Model
-        This auto parts image classifier is built using Transfer Learning with MobileNetV2, capable of classifying images into 40 distinct auto parts classes. The model was trained on a dataset consisting of 6917 training images, 200 validation images, and 200 test images, with a balanced distribution across all 40 classes.
+        This auto parts image classifier is built using **Transfer Learning with MobileNetV2**, capable of classifying images into 40 distinct auto parts classes. The model was trained on a dataset consisting of 6917 training images, 200 validation images, and 200 test images, with a balanced distribution across all 40 classes.
         """)
     # Add an expander for available classes in the sidebar
     with st.expander("40 Available Classes", expanded=False):
@@ -144,14 +144,15 @@ if 'show_eda' not in st.session_state:
 if st.session_state.show_eda:
     st.header("🚗 EDA and model performance 🛠️")
     st.write("""
-    Finding the right car part can feel like a challenge, especially if you're not an expert! 😅
-    The PCA analysis highlights just how challenging this task is, showing that many parts share similar features.
+    Finding the right car part can feel like a challenge, especially if you're not an expert! 😅 
+    The PCA analysis below highlights just how challenging this task is, showing that many parts share similar features.
     """)
+
     st.image("assets/1_PCA.png", caption="Principal Component Analysis")
 
     st.write("""
-    That’s where this app comes in! 🎉
-    Simply upload or take a picture of the part, and we'll tell you what it is! 📸🔍
+    That’s where this app comes in! 🎉 
+    Simply upload or take a picture of the part, and we'll tell you what it is! 📸🔍 
     The model performs well with a **93.5%** test accuracy, and you can explore the confusion matrix to see how it handles different parts. 🙌
     """)
 
