@@ -7,3 +7,4 @@ To address this, I developed this auto parts image classifier using **Transfer L
 The model achieves a **93.5%** test accuracy, helping non-experts quickly figure out which part they need to purchase. You can explore the model further through the link below.
 
 [Explore the Classifier Here](https://autopartsimageclassifier.streamlit.app/)
+![GIF](assets/auto_classifier_screenshot.gif)
