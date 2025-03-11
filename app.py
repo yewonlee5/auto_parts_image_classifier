@@ -87,6 +87,10 @@ with st.sidebar:
                 <img src="https://img.icons8.com/ios-filled/50/000000/github.png" alt="GitHub" style="width: 30px; height: 30px;"/>
             </a>
             &nbsp;
+            <a href="https://www.linkedin.com/in/yewonlee5" target="_blank">
+                <img src="https://img.icons8.com/ios-filled/50/000000/linkedin.png" alt="LinkedIn" style="width: 30px; height: 30px;"/>
+            </a>
+            &nbsp;
             <a href="mailto:ylee52@g.ucla.edu" target="_blank">
                 <img src="https://img.icons8.com/ios-filled/50/000000/mail.png" alt="Email" style="width: 30px; height: 30px;"/>
             </a>
