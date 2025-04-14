@@ -151,7 +151,7 @@ if st.session_state.show_eda:
     st.write("""
     This auto parts image classifier is built using **Transfer Learning with MobileNetV2**, capable of classifying images into 40 distinct auto parts classes. 
     The model was trained on a dataset consisting of 6,917 training images, 200 validation images, and 200 test images, with a balanced distribution across all 40 classes. 
-    *(Data Source: [kaggle](https://www.kaggle.com/datasets/gpiosenka/car-parts-40-classes)*
+    *(Data Source: [kaggle](https://www.kaggle.com/datasets/gpiosenka/car-parts-40-classes))*
     """)
     st.write("""
     The PCA analysis below highlights the top 30 features of the training data images, showing that no specific feature stands out and that common shapes (such as circles, pipes, etc.) are shared as common features. 
