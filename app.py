@@ -140,6 +140,8 @@ if uploaded_image is not None:
 
             # explanation from bedrock
             explanation = get_bedrock_explanation(class_name)
+            cleaned_explanation = explanation.replace("\n", "<br>")
+
             st.markdown(f"""
             <div style="border: 1px solid #DDD; padding: 15px; border-radius: 10px; background-color: #f9f9f9;">
             🧠 <b>Image Classifier Result:</b><br>
