@@ -5,7 +5,7 @@ import tensorflow as tf
 import pandas as pd
 import matplotlib.pyplot as plt
 from bedrock_utils import get_bedrock_explanation
-
+import html
 
 # Class Name Dictionary
 class_names = {0: 'AIR COMPRESSOR', 1: 'ALTERNATOR', 2: 'BATTERY', 3: 'BRAKE CALIPER',
@@ -140,7 +140,7 @@ if uploaded_image is not None:
 
             # explanation from bedrock
             explanation = get_bedrock_explanation(class_name)
-            cleaned_explanation = explanation.replace("\n", "<br>")
+            cleaned_explanation = html.escape(explanation).replace("\n", "<br>")
 
             st.markdown(f"""
             <div style="border: 1px solid #DDD; padding: 15px; border-radius: 10px; background-color: #f9f9f9;">
