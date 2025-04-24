@@ -15,7 +15,7 @@ bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")
 def get_bedrock_explanation(label):
     prompt = f"""This '{label}' is a part name of a car.
                 Start with the sentence saying 'It seems like you're looking for '**{label}**''!
-                Then describe the location and role of the car part named '{label}' in two sentences.
+                Then generally describe the location and role of the car part named '{label}' in two sentences.
              """
 
     body = {
