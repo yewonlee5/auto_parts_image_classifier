@@ -13,10 +13,16 @@ s3 = session.client("s3")
 bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 def get_bedrock_explanation(label):
-    prompt = f"""This '{label}' is a part name of a car.
-                Start with the sentence saying 'It seems like you're looking for '**{label}**''!
-                Then generally describe the location and role of the car part named '{label}' in two sentences.
-             """
+    prompt = f"""
+    You are a car expert.
+
+    Your task is to:
+    1. Start your response with exactly this sentence: "It seems like you're looking for **{label}**!"
+    2. After that, write exactly two sentences describing the general location and function of the car part '{label}'.
+    3. Do not include any extra information or disclaimers.
+
+    Only follow the instructions above and write exactly 3 sentences in total.
+    """
 
     body = {
         "inputText": prompt,
